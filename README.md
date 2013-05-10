@@ -1,6 +1,6 @@
 # ISO 8601 #
 
-A small representation using [reveal.js](http://lab.hakim.se/reveal-js/#/) about ISO 8601 standard.
+A presentation using [reveal.js](http://lab.hakim.se/reveal-js/#/) about the ISO 8601 standard.
 
 	git clone git@github.com:oschrenk/iso8601-presentation.git
 	cd iso8601-presentation
