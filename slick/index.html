@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>slick - Scala Language-Integrated Connection Kit</title>
+
+		<meta name="description" content="slick - Scala Language-Integrated Connection Kit">
+		<meta name="author" content="Oliver Schrenk">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/default.css" id="theme">
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+
+				<section>
+					<h1>slick</h1>
+					<h3>Scala Language-Integrated Connection Kit</h3>
+					<p>
+						<small>Created by <a href="http://oschrenk.com">Oliver Schrenk</a> / <a href="http://twitter.com/oschrenk">@oschrenk</a></small>
+					</p>
+				</section>
+
+				<section>
+					<h2>Setup</h2>
+
+					<pre><code data-trim contenteditable>
+scalaVersion := "2.10.0"
+
+libraryDependencies ++= List(
+  "com.typesafe.slick" %% "slick" % "1.0.0",
+  "org.slf4j" % "slf4j-nop" % "1.6.4",
+  "mysql" % "mysql-connector-java" % "5.1.25"
+)
+					</code></pre>
+
+				</section>
+
+				<section>
+					<h2>Imports</h2>
+
+					<pre><code data-trim contenteditable>
+import scala.slick.session.Database._
+import scala.slick.driver.MySQLDriver.simple._
+					</code></pre>
+
+				</section>
+
+				<section>
+					<h2>Connection</h2>
+
+					<pre><code data-trim contenteditable>
+Database.forURL(
+  "jdbc:mysql://host:3306/elmar",
+  driver = "com.mysql.jdbc.Driver"
+) withSession {...}
+
+val ds = new MysqlDataSource
+    ds.setUrl("jdbc:mysql://host:3306/elmar")
+    ds.setUser("...")
+    ds.setPassword( "...")
+Database.forDataSource(ds)
+					</code></pre>
+				</section>
+
+				<section>
+					<h2>APIs</h2>
+
+					<ul>
+						<li>Plain SQL</li>
+						<li>Lifted Embedding</li>
+						<li>Direct Embedding (experimental, no support for inserting)</li>
+					</ul>
+				</section>
+
+				<section>
+					<h2>Plain SQL</h2>
+					<p>
+						Data Definition
+					</p>
+
+					<pre><code data-trim contenteditable>
+(Q.updateNA + "insert into companies values(101, 'Acme, Inc.'").execute
+					</code></pre>
+
+				</section>
+
+				<section>
+					<h2>Plain SQL</h2>
+					<p>
+						Queries
+					</p>
+
+					<pre><code data-trim contenteditable>
+import scala.slick.jdbc.{GetResult, StaticQuery => Q}
+import Q.interpolation
+case class AvailabilityRecord(
+   brand: String, city: String, dateOfQuery: Timestamp
+)
+implicit val getAvailabilityRecordResult =
+   GetResult(r => AvailabilityRecord(
+   r.nextString, // r.<<
+   r.nextString, // r.<<
+   r.nextTimestamp()) // r.<<
+)
+val myBrand = "OA"
+val q =
+   sql"select brand, city, dateOfQuery
+   from availabilitylog
+   where brand = $myBrand limit 10".as[AvailabilityRecord]
+println(q.list())
+					</code></pre>
+
+				</section>
+
+				<section>
+					<h2>Lifted Embedding</h2>
+					<p>
+						Table with default projection
+					</p>
+
+					<pre><code data-trim contenteditable>
+object AvailabilityRecords
+   extends Table[(String, String, Timestamp)]
+   ("availabilitylog") {
+      def brand = column[String]("brand")
+      def city = column[String]("city")
+      def dateOfQuery = column[Timestamp]("dateOfQuery")
+
+      def * = brand ~ city ~ dateOfQuery
+}
+					</code></pre>
+
+				</section>
+
+				<section>
+					<h2>Lifted Embedding</h2>
+					<p>
+						Table with mapped projection
+					</p>
+
+					<pre><code data-trim contenteditable>
+case class AvailabilityRecord(
+   brand: String, city: String, dateOfQuery: Timestamp
+)
+object AvailabilityRecords
+   extends Table[AvailabilityRecord]("availabilitylog") {
+      def brand = column[String]("brand")
+      def city = column[String]("city")
+      def dateOfQuery = column[Timestamp]("dateOfQuery")
+
+      def * = brand ~ city ~ dateOfQuery
+              <>(AvailabilityRecord, AvailabilityRecord.unapply _)
+}
+					</code></pre>
+
+				</section>
+
+				<section>
+					<h2>Inserting</h2>
+					<pre><code data-trim contenteditable>
+AvailabilityRecords.ddl.create
+AvailabilityRecords.insert("TUI", "Hanoi", "2013-10-02")
+					</code></pre>
+				</section>
+
+				<section>
+					<h2>Updating</h2>
+					<pre><code data-trim contenteditable>
+val q = for {
+   c <- AvailabilityRecords if c.name === "TUI"
+} yield c.city
+q.update("New York")
+					</code></pre>
+				</section>
+
+				<section>
+					<h2>Sorting and Paging</h2>
+					<pre><code data-trim contenteditable>
+Query(AvailabilityRecords).
+sortBy(_.city.desc.nullsFirst).
+drop(5)take(10)
+					</code></pre>
+				</section>
+
+				<section>
+					<h2>Filtering</h2>
+					<pre><code data-trim contenteditable>
+Query(AvailabilityRecords).
+take(30).
+filter(_.brand === "OA")
+					</code></pre>
+				</section>
+
+				<section>
+					<h2>Implicit Joining</h2>
+					<pre><code data-trim contenteditable>
+object Persons extends Table[Person]("person") {
+def id = column[String]("id")
+def firstName = column[String]("firstName")
+def lastName = column[String]("lastName")
+def * = id ~ firstName ~ lastName <> (Person, Person.unapply _)
+}
+object Bookings extends Table[Booking ]("booking") {
+def city = column[String]("cityName")
+def bookingDate = column[Timestamp]("bookingDate")
+def bookerId = column[String]("booker_id")
+def * = city ~ bookingDate ~ bookerId <> (Booking, Booking.unapply _)
+}
+val implicitInnerJoin = for {
+   b <- Bookings
+   p <- Persons if b.bookerId === p.id
+} yield (b.city, p.firstName, p.lastName)
+println(implicitInnerJoin.take(5).list)
+					</code></pre>
+				</section>
+
+				<section>
+					<h2>Explicit Joining</h2>
+					<pre><code data-trim contenteditable>
+object Persons extends Table[Person]("person") {
+def id = column[String]("id")
+def firstName = column[String]("firstName")
+def lastName = column[String]("lastName")
+def * = id ~ firstName ~ lastName <> (Person, Person.unapply _)
+}
+object Bookings extends Table[Booking ]("booking") {
+def city = column[String]("cityName")
+def bookingDate = column[Timestamp]("bookingDate")
+def bookerId = column[String]("booker_id")
+def * = city ~ bookingDate ~ bookerId <> (Booking, Booking.unapply _)
+}
+val explicitInnerJoin = for {
+  (b, p) <- Bookings innerJoin Persons on (_.bookerId === _.id)
+} yield (b.city, p.firstName, p.lastName)
+println(explicitInnerJoin.take(5).list)
+					</code></pre>
+				</section>
+
+			</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/search/search.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
