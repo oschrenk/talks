@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>ISO 8601 - a standard for date and time representation</title>
+
+		<meta name="description" content="ISO 8601 - a standard for date and time representation">
+		<meta name="author" content="Oliver Schrenk">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/default.css" id="theme">
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+
+				<section>
+					<h1>ISO 8601</h1>
+					<h3>a standard for date and time representation</h3>
+					<p>
+						<small>created by <a href="http://oschrenk.com">Oliver Schrenk</a> / <a href="http://twitter.com/oschrenk">@oschrenk</a></small>
+					</p>
+				</section>
+
+				<section>
+					<h2>10/05/13 at 4?</h2>
+
+					<aside class="notes">
+						The goal is to lose ambiguity
+					</aside>
+				</section>
+
+				<section>
+					<h2>Dates</h2>
+
+					<aside class="notes">
+						Let's talk about dates first.
+					</aside>
+				</section>
+
+				<section>
+					<h2>Years</h2>
+
+					<p>
+						<code>yyyy</code>
+					</p>
+
+					<ul>
+						<li>4 digits for the year</li>
+						<li>ranges from <code>0000</code> to <code>9999</code></li>
+						<li>more digits must be agreed upon, and must be prefixed with <code>±</code></li>
+					</ul>
+
+					<aside class="notes">
+						0000 being equal to 1 BC and all others AD.
+					</aside>
+				</section>
+
+				<section>
+					<h2>Month</h2>
+
+					<p>
+						<code>yyyy-mm</code>
+					</p>
+
+					<ul>
+						<li>4 digits for the year</li>
+						<li>2 dights for the month</li>
+						<li>ranges from <code>01</code> to <code>12</code></li>
+						<li><code>yyyymm</code> is disallowed to avoid with truncated representation <code>yymmdd</code> of
+					</ul>
+
+					<aside class="notes">
+						<p>0000 being equal to 1 BC and all others AD.</p>
+
+						<p><code>ISO 8601:2000</code> allowed truncation (by agreement), where leading components of a date or time are omitted. Notably, this allowed two-digit years to be used and the ambiguous formats <code>YY-MM-DD</code> and <code>YYMMDD</code>. This provision was removed in <code>ISO 8601:2004</code>.</p>
+					</aside>
+				</section>
+
+				<section>
+					<h2>Weeks</h2>
+					<p>
+						<code>yyyy-Www</code> or <br><code>yyyyWww</code>
+					</p>
+					<ul>
+						<li>4 digits for the year</li>
+						<li>follows the ISO week-numbering year</li>
+						<li>separated with dash (optional but advised)</li>
+						<code>W</code> as Week number prefix</li>
+						<li>ranges from <code>W01</code> to <code>W53</code></li>
+					</ul>
+
+					<aside class="notes">
+						<p>There are mutually equivalent descriptions of week 01:
+							<ul>
+								<li>the week with the year's first Thursday in it (the formal ISO definition),</li>
+								<li>the week with 4 January in it,</li>
+								<li>the first week with the majority (four or more) of its days in the starting year, and</li>
+								<li>the week starting with the Monday in the period 29 December – 4 January.</li>
+							</ul>
+						</p>
+						<p>
+						<p>Examples for the ISO week-numbering year:
+							<ul>
+								<li><code>Monday 29 December 2008</code> is written <code>2009-W01-1</code></li>
+								<li><code>Sunday 3 January 2010</code> is written <code>2009-W53-7</code></li>
+							</ul>
+						</p>
+					</asside>
+				</section>
+
+				<section>
+					<h2>Week Dates</h2>
+					<p>
+						<code>yyyy-Www-d</code> or <br><code>yyyyWwwd</code>
+					</p>
+					<ul>
+						<li>4 digits for the year</li>
+						<li>follows the ISO week-numbering year</li>
+						<li>separated with dash (optional but advised)</li>
+						<code>W</code> as Week number prefix</li>
+						<li>ranges from <code>W01</code> to <code>W53</code></li>
+						<li>1 digit for the weekday</li>
+						<li>ranges from <code>1</code> (Monday) to <code>7</code> (Sunday)</li>
+					</ul>
+				</section>
+
+				<section>
+					<h2>Ordinal Dates</h2>
+					<p>
+						<code>yyyy-ddd</code> or <br><code>yyyyddd</code>
+					</p>
+					<ul>
+						<li>4 digits for the year</li>
+						<li>separated with dash (optional but advised)</li>
+						<li>3 digits for the day of the year</li>
+						<li>ranges from <code>001</code> to <code>365</code> (366 in leap year)</li>
+					</ul>
+				</section>
+
+				<section>
+					<h2>Calendar Dates</h2>
+					<p>
+						<code>yyyy-mm-dd</code> or <br><code>yyyy-mm-dd</code>
+					</p>
+					<ul>
+						<li>4 digits for the year</li>
+						<li>2 digits for month</li>
+						<li>2 digits for day</li>
+						<li>separated with dash (optional but advised)</li>
+						<li>indicates local time zone</li>
+					</ul>
+				</section>
+
+				<section>
+					<h2>Time only for local use</h2>
+					<p>
+						<code>hh:mm:ss</code> or <code>hhmmss</code> or<br>
+						<code>hh:mm</code> or <code>hhmm</code> or<br>
+						<code>hh</code>
+					</p>
+					<ul>
+						<li>2 digits for zero padded hour</li>
+						<li>2 digits for zero padded minute</li>
+						<li>2 digits for zero padded second (optional)</li>
+						<li>separated with colon (optional but advised)</li>
+						<li>indicates local time zone</li>
+					</ul>
+
+					<aside class="notes">
+						<ul>
+							<li><code>[hh]</code> refers to a zero-padded hour between <code>00</code> and <code>24</code> (where <code>24</code> is only used to notate midnight at the end of a calendar day).</li>
+							<li><code>[mm]</code> refers to a zero-padded minute between <code>00</code> and <code>59</code>.</li>
+							<li><code>[ss]</code> refers to a zero-padded second between <code>00</code> and <code>60</code> ( where <code>60</code> is only used to notate an added leap second).</li>
+							<li>Midnight is a special case and can be referred to as both <code>00:00</code> and <code>24:00</code>. The notation <code>00:00</code> is used at the beginning of a calendar day and is the more frequently used. At the end of a day use <code>24:00</code>.</li>
+						</ul>
+						<p>Decimal fractions may be added to any of the three time elements. A decimal mark, either a comma or a dot (without any preference as stated in resolution 10 of the 22nd General Conference CGPM in 2003, but with a preference for a comma according to ISO 8601:2004) is used as a separator between the time element and its fraction. A fraction may only be added to the lowest order time element in the representation. To denote _14 hours, 30 and one half minutes_, do not include a seconds figure. Represent it as <code>14:30,5</code>, <code>1430,5</code>, <code>14:30.5</code>, or <code>1430.5</code>. There is no limit on the number of decimal places for the decimal fraction. However, the number of decimal places needs to be agreed to by the communicating parties.</p>
+					</aside>
+				</section>
+
+				<section>
+					<h2>Time only for international use</h2>
+					<p>
+						<code>hh:mm:ssZ</code> or <code>hhmmssZ</code> or<br>
+						<code>hh:mmZ</code> or <code>hhmmZ</code> or<br>
+						<code>hhZ</code>
+					</p>
+					<ul>
+						<li>2 digits for hour</li>
+						<li>2 digits for minute</li>
+						<li>2 digits for second (optional)</li>
+						<li>Separated with colon (optional but advised)</li>
+						<li><code>Z</code> indicates that time is represented in UTC</li>
+					</ul>
+				</section>
+
+				<section>
+					<h2>Time only with explicit time zone use</h2>
+					<p>
+						<code>±hh:mm</code> or <br><code>±hhmm</code> or <br><code>±hh</code>
+					</p>
+					<ul>
+						<li><code>±</code> indicates offset from UTC</li>
+						<li>2 digits for hour</li>
+						<li>2 digits for minute (optional)</li>
+						<li>Separated with colon (optional but advised)</li>
+						<li>stick to one format</li>
+					</ul>
+
+					<aside class="notes">
+						<p>An offset of zero, in addition to having the special representation "Z", can also be stated numerically as <code>+00:00</code>, <code>+0000</code>, or <code>+00</code>. However, it is not permitted to state it numerically with a negative sign, as <code>-00:00</code>, <code>-0000</code>, or <code>-00</code>. The clause dictating sign usage (clause 3.4.2 in the 2004 edition of the standard) states that a plus sign must be used for a positive or zero value, and a minus sign for a negative value. Contrary to this rule, RFC 3339, which is otherwise a profile of ISO 8601, permits the use of <code>-00</code>, with the same denotation as <code>+00</code> but a differing connotation.</p>
+					</aside>
+				</section>
+
+				<section>
+					<h2>Combined date and time format</h2>
+					<p>
+						<code>&#x003C;date&#x003E;T&#x003C;time&#x003E;</code>
+					</p>
+					<ul>
+						<li>date designation</li>
+						<li>time designation</li>
+						<li><code>T</code> separator can be omitted but is not standard</li>
+					</ul>
+				</section>
+
+				<section>
+					<h2>Durations</h2>
+					<p>
+						<code>PnYnMnDTnHnMnS</code> or <br>
+						<code>P&#x003C;date&#x003E;T&#x003C;time&#x003E;</code>
+					</p>
+					<ul>
+						<li><code>P</code> at the start</li>
+						<li><code>Y</code>, <code>M</code>, <code>W</code>, <code>D</code> follows the value of years, months, weeks, and days</li>
+						<li><code>T</code>  precedes the time components</li>
+						<li><code>H</code>, <code>M</code>, <code>S</code> follows the value of hours, minutes, and seconds</li>
+					</ul>
+				</section>
+
+				<section>
+					<h2>Time intervals</h2>
+					<p>
+						<code>&#x003C;start&#x003E;/&#x003C;end&#x003E;</code> or <br>
+						<code>&#x003C;start&#x003E;/&#x003C;duration&#x003E;</code> or <br>
+						<code>&#x003C;duration&#x003E;/&#x003C;end&#x003E;</code>
+					</p>
+					<ul>
+						<li>start of period followed by <code>/</code> and end of period</li>
+						<li>higher order components can be omitted
+					</ul>
+				</section>
+
+				<section>
+					<img src="images/iso_8601.png"/>
+					<p>
+						<small>created by <a href="http://xkcd.com">xkcd</a></small>
+					</p>
+				</section>
+
+				<section>
+					<h2>Extra slides</h2>
+					<ul>
+						<li>millisecond accuracy: <code>16:00:00.345</code></li>
+						<li>day of year based date: <code>yyyy-ddd</code></li>
+						<li>week of year based date: <code>yyyy-wwww-d</code></li>
+					</ul>
+				</section>
+
+			</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/search/search.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
