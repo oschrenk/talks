@@ -1,6 +1,6 @@
 # hadoop #
 
-A presentation using [reveal.js](http://lab.hakim.se/reveal-js/#/) about slick: Scala Language-Integrated Connection Kit.
+A presentation using [reveal.js](http://lab.hakim.se/reveal-js/#/) about the very basics of Hadoop.
 
 	git clone git@github.com:oschrenk/talks.git
 	cd talks/hadoop
