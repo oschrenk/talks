@@ -5,6 +5,6 @@ A presentation using [reveal.js](http://lab.hakim.se/reveal-js/#/) about the ver
 	git clone git@github.com:oschrenk/talks.git
 	cd talks/hadoop
 	npm install
-	grunt serve &
+	npm start
 
 Point your browser to [localhost:8000](http://localhost:8000/)
